@@ -1,8 +1,6 @@
 # Minitest::Verify
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/minitest/verify`. To experiment with that code, run `bin/console` for an interactive prompt.
+Avoid false-positive tests by verifying they fail when key setup is removed.
 
 ## Installation
 
@@ -18,14 +16,59 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+This is a false-positive test. It always passes because `post` and `comment` are completely unrelated: there's no reason `post.comments` would ever include `comment`.
 
-## Development
+```rb
+require "minitest/autorun"
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+class PostTest < Minitest::Test
+  def test_comments_excludes_hidden_comments
+    post = create(:post)
+    comment = create(:comment, hidden: true)
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+    refute_includes post.comments, comment
+  end
+end
+```
 
-## Contributing
+We can pull out the key setup and wrap it with `verify_fails_without`:
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/minitest-verify.
+```rb
+require "minitest/autorun"
+require "minitest/verify"
+
+class PostTest < Minitest::Test
+  include Minitest::Verify
+
+  def test_comments_excludes_hidden_comments
+    post = create(:post)
+    comment = create(:comment)
+
+    verify_fails_without { comment.update!(hidden: true) }
+
+    refute_includes post.comments, comment
+  end
+end
+```
+
+Now run the test with the `--verify` argument:
+
+```
+$ ruby post_test.rb --verify
+```
+
+This will cause the test to run twice. First it runs _with_ the contents of the `verify_fails_without` block evaluated (normal run). Then it runs _without_ the contents of the `verify_fails_without` block evaluated (verification run). If the test still passes without having evaluated the code inside the block, it's a false positive and you'll see a verification failure in your test output:
+
+```
+# Running:
+
+V
+
+Finished in 0.000380s, 2631.5783 runs/s, 5263.1565 assertions/s.
+
+  1) Verification Failure:
+PostTest#test_comments_excludes_hidden_comments [post_test.rb:11]:
+Expected at least one assertion to fail.
+
+1 runs, 2 assertions, 0 failures, 0 errors, 0 skips
+```

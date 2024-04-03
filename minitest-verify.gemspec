@@ -10,13 +10,13 @@ Gem::Specification.new do |spec|
 
   spec.summary = "A minitest plugin to prevent false positive tests."
   # spec.description = "TODO: Write a longer description or delete this line."
-  # spec.homepage = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage = "https://github.com/thomasmarshall/minitest-verify"
   spec.required_ruby_version = ">= 3.0.0"
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
-  # spec.metadata["homepage_uri"] = spec.homepage
-  # spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/thomasmarshall/minitest-verify"
   # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
 
   # Specify which files should be added to the gem when it is released.
