@@ -62,13 +62,13 @@ This will cause the test to run twice. First it runs _with_ the contents of the 
 ```
 # Running:
 
-V
+F
 
 Finished in 0.000380s, 2631.5783 runs/s, 5263.1565 assertions/s.
 
-  1) Verification Failure:
+  1) Failure:
 PostTest#test_comments_excludes_hidden_comments [post_test.rb:11]:
 Expected at least one assertion to fail.
 
-1 runs, 2 assertions, 0 failures, 0 errors, 0 skips
+1 runs, 2 assertions, 1 failures, 0 errors, 0 skips
 ```
