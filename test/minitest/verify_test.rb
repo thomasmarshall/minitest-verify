@@ -76,7 +76,7 @@ module Minitest
 
       result = enabled { test_class.new(:test_foo).run }
 
-      assert_equal 2, result.assertions
+      assert_equal 1, result.assertions
       assert_equal 1, result.failures.size
       assert_match "Expected: 2\n  Actual: 1", result.failures.first.message
     end

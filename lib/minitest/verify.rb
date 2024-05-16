@@ -22,7 +22,7 @@ module Minitest
     def run
       super
 
-      return Result.from(self) unless Verify.enabled
+      return Result.from(self) unless Verify.enabled && failures.none?
 
       begin
         while @current_caller = callers.shift
