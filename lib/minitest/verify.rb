@@ -24,9 +24,6 @@ module Minitest
 
       return Result.from(self) unless Verify.enabled
 
-      @normal_failures = failures.dup
-      failures.clear
-
       begin
         while @current_caller = callers.shift
           with_verification { super }
@@ -45,13 +42,16 @@ module Minitest
     end
 
     def with_verification
+      existing_failures = failures.dup
+      failures.clear
+
       yield
 
       assertions = failures.select { |f| f.class == Minitest::Assertion }
       unexpected_errors = failures.select { |f| f.class == Minitest::UnexpectedError }
 
       failures.clear
-      failures.concat(@normal_failures)
+      failures.concat(existing_failures)
 
       if unexpected_errors.any?
         failures.concat(unexpected_errors)

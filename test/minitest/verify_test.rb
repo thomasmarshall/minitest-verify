@@ -133,6 +133,20 @@ module Minitest
       assert_empty result.failures
     end
 
+    def test_failing_test_without_verification
+      test_class = build_test_class do
+        def test_foo
+          assert_equal "abc", "def"
+        end
+      end
+
+      result = enabled { test_class.new(:test_foo).run }
+
+      assert_equal 1, result.assertions
+      assert_equal 1, result.failures.size
+      assert_match "Expected: \"abc\"\n  Actual: \"def\"", result.failures.first.message
+    end
+
     private
 
     def enabled
