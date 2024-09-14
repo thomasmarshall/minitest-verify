@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Thomas Marshall"]
   spec.email = ["thomas@thomasmarshall.com"]
 
-  spec.summary = "A minitest plugin to prevent false positive tests."
+  spec.summary = "A minitest plugin to prevent false negative tests."
   # spec.description = "TODO: Write a longer description or delete this line."
   spec.homepage = "https://github.com/thomasmarshall/minitest-verify"
   spec.required_ruby_version = ">= 3.0.0"

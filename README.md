@@ -1,6 +1,6 @@
 # Minitest::Verify
 
-Avoid false-positive tests by verifying they fail when key setup is removed.
+Avoid false negative tests by verifying they fail when key setup is removed.
 
 This is a quick proof-of-concept minitest plugin, but it mostly works fine!
 
@@ -16,7 +16,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-This is a false-positive test. It always passes because `post` and `comment` are completely unrelated: there's no reason `post.comments` would ever include `comment`.
+This is a false negative test. It always passes because `post` and `comment` are completely unrelated: there's no reason `post.comments` would ever include `comment`.
 
 ```rb
 require "minitest/autorun"
@@ -57,7 +57,7 @@ Now run the test with the `--verify` argument:
 $ ruby post_test.rb --verify
 ```
 
-This will cause the test to run twice. First it runs _with_ the contents of the `verify_fails_without` block evaluated (normal run). Then it runs _without_ the contents of the `verify_fails_without` block evaluated (verification run). If the test still passes without having evaluated the code inside the block, it's a false positive and you'll see a verification failure in your test output:
+This will cause the test to run twice. First it runs _with_ the contents of the `verify_fails_without` block evaluated (normal run). Then it runs _without_ the contents of the `verify_fails_without` block evaluated (verification run). If the test still passes without having evaluated the code inside the block, it's a false negative and you'll see a verification failure in your test output:
 
 ```
 # Running:
