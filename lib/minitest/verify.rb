@@ -31,7 +31,6 @@ module Minitest
           with_verification { super }
         end
       rescue VerificationFailedError
-        callers.clear
       end
 
       Result.from(self)
