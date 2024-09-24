@@ -20,9 +20,11 @@ module Minitest
     end
 
     def run
+      return super unless Verify.enabled
+
       super
 
-      return Result.from(self) unless Verify.enabled && failures.none?
+      return Result.from(self) if failures.any?
 
       begin
         while (@current_caller = callers.shift)
