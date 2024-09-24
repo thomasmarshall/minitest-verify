@@ -5,7 +5,7 @@ module Minitest
   class VerifyTest < Minitest::Test
     def test_passing_test
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           a = 1
           verify_fails_without { a += 1 }
           assert_equal 2, a
@@ -20,7 +20,7 @@ module Minitest
 
     def test_failing_test
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           a = 1
           verify_fails_without { a *= 1 }
           assert_equal 2, a
@@ -36,7 +36,7 @@ module Minitest
 
     def test_verifying_unnecessary_setup
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           a = 1
           verify_fails_without { nil }
           assert_equal 1, a
@@ -52,7 +52,7 @@ module Minitest
 
     def test_verifying_necessary_setup
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           a = 1
           verify_fails_without { a += 1 }
           assert_equal 2, a
@@ -67,7 +67,7 @@ module Minitest
 
     def test_verifying_failing_test
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           a = 1
           verify_fails_without { nil }
           assert_equal 2, a
@@ -83,7 +83,7 @@ module Minitest
 
     def test_multiple_assertions
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           a = 1
           verify_fails_without { a += 1 }
           verify_fails_without { nil }
@@ -101,7 +101,7 @@ module Minitest
 
     def test_unexpected_error
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           a = verify_fails_without { 1 }
           a *= 3
           assert_equal 3, a
@@ -117,12 +117,12 @@ module Minitest
 
     def test_setup_method
       test_class = build_test_class do
-        def setup
+        define_method(:setup) do
           @a = 1
           verify_fails_without { @a += 1 }
         end
 
-        def test_foo
+        define_method(:test_foo) do
           assert_equal 2, @a
         end
       end
@@ -135,7 +135,7 @@ module Minitest
 
     def test_failing_test_without_verification
       test_class = build_test_class do
-        def test_foo
+        define_method(:test_foo) do
           assert_equal "abc", "def"
         end
       end
@@ -156,10 +156,10 @@ module Minitest
       Minitest::Verify.enabled = false
     end
 
-    def build_test_class(&block)
+    def build_test_class(&)
       test_class = Class.new(Minitest::Test)
       test_class.include(Minitest::Verify)
-      test_class.class_eval(&block)
+      test_class.class_eval(&)
       test_class
     end
   end

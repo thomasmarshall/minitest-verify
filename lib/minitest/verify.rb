@@ -12,7 +12,7 @@ module Minitest
 
     def verify_fails_without(&block)
       if @current_caller
-        block.call unless caller[0] == @current_caller[0]
+        block.call unless caller(1..1).first == @current_caller[0]
       else
         callers << caller
         block.call
@@ -25,7 +25,7 @@ module Minitest
       return Result.from(self) unless Verify.enabled && failures.none?
 
       begin
-        while @current_caller = callers.shift
+        while (@current_caller = callers.shift)
           with_verification { super }
         end
       rescue VerificationFailedError
