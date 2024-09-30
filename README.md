@@ -4,6 +4,9 @@ Avoid false negative tests by verifying they fail when key setup is removed.
 
 This is a quick proof-of-concept minitest plugin, but it mostly works fine!
 
+> [!NOTE]
+> See [this lightning talk](https://www.thomasmarshall.com/talks/writing-tests-that-fail) for an example of how false negative tests are a problem, why catching them programmatically might not work out, and some more practical advice for writing more robust tests in the first place. You probably want to do that before using this gem, but feel free to try it out anyway!
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
