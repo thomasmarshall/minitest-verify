@@ -10,18 +10,43 @@ module Minitest
       attr_accessor :enabled
     end
 
-    def verify_fails_without(&block)
-      if @current_caller
-        # If @current_caller is set, we are in the verification phase.
-        # Evaluate the block unless it is the one currently being verified.
-        block.call unless caller(1..1).first == @current_caller[0]
+    NO_VALUE = Object.new
+
+    def verify_fails_without(correct_value = NO_VALUE, incorrect_value = NO_VALUE, &block)
+      if correct_value == NO_VALUE && incorrect_value == NO_VALUE && block.nil?
+        raise ArgumentError, "Either a block or a pair of arguments must be provided"
+      end
+
+      if block
+        if @current_caller
+          # If @current_caller is set, we are in the verification phase.
+          # Evaluate the block unless it is the one currently being verified.
+          block.call unless caller(1..1).first == @current_caller[0]
+        else
+          # If @current_caller is not set, we're in the normal test phase.
+          # Collect the caller (there might be multiple per test) and evaluate the block.
+          callers << caller
+          block.call
+        end
       else
-        # If @current_caller is not set, we're in the normal test phase.
-        # Collect the caller (there might be multiple per test) and evaluate the block.
-        callers << caller
-        block.call
+        if @current_caller
+          # If @current_caller is set, we are in the verification phase.
+          # Return the incorrect value if it's the one currently being verified.
+          if caller(1..1).first == @current_caller[0]
+            incorrect_value
+          else
+            correct_value
+          end
+        else
+          # If @current_caller is not set, we're in the normal test phase.
+          # Return the correct value.
+          callers << caller
+          correct_value
+        end
       end
     end
+
+    alias_method :mutate, :verify_fails_without
 
     def run
       # If verification is disabled, run the test normally.
