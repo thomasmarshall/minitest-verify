@@ -46,6 +46,23 @@ module Minitest
       end
     end
 
+    def fail_with(&block)
+      if @current_caller
+        block.call if caller(1..1).first == @current_caller[0]
+      else
+        callers << caller
+      end
+    end
+
+    def fail_without(&block)
+      if @current_caller
+        block.call unless caller(1..1).first == @current_caller[0]
+      else
+        callers << caller
+        block.call
+      end
+    end
+
     alias_method :mutate, :verify_fails_without
 
     def run
