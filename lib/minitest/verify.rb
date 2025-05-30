@@ -8,6 +8,7 @@ module Minitest
 
     class << self
       attr_accessor :enabled
+      attr_accessor :silent
     end
 
     NO_VALUE = Object.new
@@ -104,6 +105,11 @@ module Minitest
       # Remove all assertion failures so the failing test passes.
       # If at least one was removed, the test is not a false negative.
       if failures.reject! { |f| f.is_a?(Minitest::Assertion) }
+        return
+      end
+
+      # Run the verification logic but don't raise an error if it fails.
+      if Verify.silent
         return
       end
 
